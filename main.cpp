@@ -15,25 +15,49 @@ using namespace std;
 #define PWMpin 0
 
 // These do not change. Scalar might be changeable to support different frequencies. 
-const int Scalar  = 100;
+const int Scalar    = 100;
+const int tempHSize = 5;
 
 // Presetting some variables to avoid problems.
+int tempHolder[5] = {0};
 float Percent     = 100;
-float runTemp     = 0;
-float minTemp     = 0;
-float maxTemp     = 0;
-float Difference  = 100;
+int runTemp       = 0;
+int minTemp       = 0;
+int maxTemp       = 0;
+int Difference    = 100;
 int onTime        = Scalar;
 
 void setPWM()
 {
     digitalWrite(PWMpin, 1);
-    this_thread::sleep_for(chrono::microseconds(onTime));
+    this_thread::sleep_for(chrono::milliseconds(onTime));
     digitalWrite(PWMpin, 0);
-    this_thread::sleep_for(chrono::microseconds(Scalar - onTime));
+    this_thread::sleep_for(chrono::milliseconds(Scalar - onTime));
 }
 
-float getTemp()
+int avgTemp(int inVal)
+{
+    int unDivNum = 0;
+
+
+    if (tempHolder[0] == 0)
+    {
+        for (int i = 0; i < tempHSize; i++)
+        {
+            tempHolder[i] = inVal;
+        }
+    }
+
+    for (int i = 0; i < tempHSize; i++)
+    {
+        unDivNum += tempHolder[i];
+    }
+
+
+    return ceil(unDivNum/tempHSize);
+}
+
+int getTemp()
 {
     char *val = new char[5];
 
@@ -46,7 +70,7 @@ float getTemp()
     temperatureFile.close();
 
     // The output of the /sys/ file is five char. We cast to float, divide until two decimal places. Round up, divide by ten to get correct value.
-    return ceil(atof(val)/100)/10;
+    return atof(val);
 }
 
 int main()
@@ -76,7 +100,7 @@ int main()
         
         setPWM();
 
-        printf("%f %f %f %f %f %f", Percent, runTemp, minTemp, maxTemp, Difference);
+        printf("%f %d %d %d %d\n", Percent, runTemp, minTemp, maxTemp, Difference);
     }
 
     return 0;
