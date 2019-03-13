@@ -75,6 +75,8 @@ int main()
         onTime     = Scalar * Percent;
         
         setPWM();
+
+        printf("%f %f %f %f %f %f", Percent, runTemp, minTemp, maxTemp, Difference);
     }
 
     return 0;
