@@ -16,13 +16,22 @@ using namespace std;
 
 // These do not change. Scalar might be changeable to support different frequencies. 
 const int Scalar  = 100;
-const int Divisor = 100;
 
 // Presetting some variables to avoid problems.
 float Percent     = 100;
+float runTemp     = 0;
+float minTemp     = 0;
+float maxTemp     = 0;
+float Difference  = 100;
 int onTime        = Scalar;
-int offTime       = 0;
 
+void setPWM()
+{
+    digitalWrite(PWMpin, 1);
+    this_thread::sleep_for(chrono::microseconds(onTime));
+    digitalWrite(PWMpin, 0);
+    this_thread::sleep_for(chrono::microseconds(Scalar - onTime));
+}
 
 float getTemp()
 {
@@ -40,30 +49,32 @@ float getTemp()
     return ceil(atof(val)/100)/10;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
-    if (argc < 2 || atof(argv[1]) > 100 || atof(argv[1]) < 0)
-    {
-        cout << "No arguments?" << endl;
-        return 1;
-    }
-
     wiringPiSetup();
 
     pinMode(PWMpin, OUTPUT);
 
-    Percent    = atof(argv[1])/Divisor;
-    onTime     = Scalar * Percent;
-    offTime    = Scalar - onTime;
-
-    cout << onTime << " " << offTime << endl;
-
     while(1)
     {
-        digitalWrite(PWMpin, 1);
-        this_thread::sleep_for(chrono::microseconds(onTime));
-        digitalWrite(PWMpin, 0);
-        this_thread::sleep_for(chrono::microseconds(offTime));
+        runTemp = getTemp();
+
+        if (minTemp == 0 && maxTemp == 0)
+        {
+            minTemp = runTemp;
+            maxTemp = runTemp + 1;
+        }
+
+        if (runTemp < minTemp)
+            minTemp = runTemp;
+        if (runTemp > maxTemp)
+            maxTemp = runTemp;
+
+        Difference = maxTemp - minTemp;
+        Percent    = (runTemp - minTemp)/Difference;
+        onTime     = Scalar * Percent;
+        
+        setPWM();
     }
 
     return 0;
