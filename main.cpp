@@ -64,8 +64,10 @@ int getTemp()
     ifstream temperatureFile("/sys/class/thermal/thermal_zone0/temp");
 
     if (!temperatureFile.is_open())
+    {
         cout << "/sys/ file cannot be found." << endl;
-
+    }
+    
     temperatureFile.read(val, 5);
     temperatureFile.close();
 
@@ -90,9 +92,14 @@ int main()
         }
 
         if (runTemp < minTemp)
+        {
             minTemp = runTemp;
+        }
+        
         if (runTemp > maxTemp)
+        {
             maxTemp = runTemp;
+        }
 
         Difference = maxTemp - minTemp;
         Percent    = (float)(runTemp - minTemp)/Difference;
