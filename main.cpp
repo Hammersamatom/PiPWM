@@ -95,7 +95,7 @@ int main()
             maxTemp = runTemp;
 
         Difference = maxTemp - minTemp;
-        Percent    = (runTemp - minTemp)/Difference;
+        Percent    = (float)(runTemp - minTemp)/Difference;
         onTime     = Scalar * Percent;
         
         setPWM();
