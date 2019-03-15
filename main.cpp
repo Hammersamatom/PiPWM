@@ -96,6 +96,8 @@ int main()
 
     pinMode(PWMpin, OUTPUT);
 
+    printf("Starting now.\n");
+
     while(1)
     {
         runTemp = getTemp();
@@ -114,12 +116,14 @@ int main()
             maxTemp = runTemp;
         }
 
+        printf("At averaging stage.\n");
         avgTemp = avgTheTemp(runTemp);
 
         Difference = maxTemp - minTemp;
         Percent    = (float)(avgTemp - minTemp)/Difference;
         onTime     = Scalar * Percent;
-        
+
+        printf("At setPWM() stage.\n");
         setPWM();
 
         printf("%f %d %d %d %d %d\n", Percent, avgTemp, runTemp, minTemp, maxTemp, Difference);
