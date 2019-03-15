@@ -67,6 +67,11 @@ int avgTheTemp(int inVal)
         unDivNum += tempHolder[i];
     }
 
+    for (int i = 0; i < tempHolderSize; i++)
+    {
+        printf("%d: %d", tempHolderSize, tempHolder[i]);
+    }
+
     return ceil(unDivNum/tempHolderSize);
 }
 
@@ -93,8 +98,6 @@ int main()
     wiringPiSetup();
 
     pinMode(PWMpin, OUTPUT);
-
-    printf("Starting now.\n");
 
     while(1)
     {
