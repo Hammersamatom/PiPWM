@@ -16,7 +16,7 @@ using namespace std;
 
 // These do not change. Scalar might be changeable to support different frequencies. 
 const int Scalar    = 100;
-const int tempHolderSize = 5;
+const int tempHolderSize = 10;
 
 // Presetting some variables to avoid problems.
 float Percent             = 100;
@@ -61,8 +61,6 @@ int avgTheTemp(int inVal)
     {
         avgRun = 0;
     }
-
-
 
     for (int i = 0; i < tempHolderSize; i++)
     {
@@ -116,7 +114,6 @@ int main()
             maxTemp = runTemp;
         }
 
-        printf("At averaging stage.\n");
         avgTemp = avgTheTemp(runTemp);
 
         Difference = maxTemp - minTemp;
