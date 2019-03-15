@@ -126,6 +126,7 @@ int main()
         printf("At setPWM() stage.\n");
         setPWM();
 
+        printf("Hit reporting stage.\n");
         printf("%f %d %d %d %d %d\n", Percent, avgTemp, runTemp, minTemp, maxTemp, Difference);
     }
 
