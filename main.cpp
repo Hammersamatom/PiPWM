@@ -47,7 +47,7 @@ int avgTheTemp(int inVal)
     int unDivNum = 0;
 
     // Presets the entire tempHolder array to the current inVal to gurantee unDivNum !< minTemp
-    if (tempHolder[0] == 0)
+    if (tempHolder[0] == tempHolderSize)
     {
         for (int i = 0; i < tempHolderSize; i++)
         {
