@@ -69,7 +69,7 @@ int avgTheTemp(int inVal)
 
     for (int i = 0; i < tempHolderSize; i++)
     {
-        printf("%d: %d", tempHolderSize, tempHolder[i]);
+        printf("%d: %d\n", i, tempHolder[i]);
     }
 
     return ceil(unDivNum/tempHolderSize);
