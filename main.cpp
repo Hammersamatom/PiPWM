@@ -123,6 +123,8 @@ int main()
 
         printf("%f %d %d %d %d %d\n", Percent, avgTemp, runTemp, minTemp, maxTemp, Difference);
         setPWM();
+
+        printf("\033c");
     }
 
     return 0;
