@@ -115,6 +115,7 @@ int main()
         }
 
         avgTemp = avgTheTemp(runTemp);
+        printf("%d\n", avgTemp);
 
         Difference = maxTemp - minTemp;
         Percent    = (float)(avgTemp - minTemp)/Difference;
