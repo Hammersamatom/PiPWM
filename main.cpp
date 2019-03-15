@@ -16,16 +16,21 @@ using namespace std;
 
 // These do not change. Scalar might be changeable to support different frequencies. 
 const int Scalar    = 100;
-const int tempHSize = 5;
+const int tempHolderSize = 5;
 
 // Presetting some variables to avoid problems.
-int tempHolder[5] = {0};
-float Percent     = 100;
-int runTemp       = 0;
-int minTemp       = 0;
-int maxTemp       = 0;
-int Difference    = 100;
-int onTime        = Scalar;
+float Percent             = 100;
+int tempHolder[tempHolderSize] =  {tempHolderSize};
+int runTemp               = 0;
+int avgTemp               = 0;
+int minTemp               = 0;
+int maxTemp               = 0;
+int Difference            = 0;
+int onTime                = 0;
+
+
+
+
 
 void setPWM()
 {
@@ -35,26 +40,36 @@ void setPWM()
     this_thread::sleep_for(chrono::milliseconds(Scalar - onTime));
 }
 
-int avgTemp(int inVal)
+int avgTheTemp(int inVal)
 {
+    // This number is set to 0, allows for numbers to be added and averaged 
     int unDivNum = 0;
+    int avgRun   = 0;
 
-
+    // Presets the entire tempHolder array to the current inVal to gurantee unDivNum !< minTemp
     if (tempHolder[0] == 0)
     {
-        for (int i = 0; i < tempHSize; i++)
+        for (int i = 0; i < tempHolderSize; i++)
         {
             tempHolder[i] = inVal;
         }
     }
+    
+    tempHolder[avgRun] = inVal;
+    avgRun++;
+    if (avgRun == 5)
+    {
+        avgRun = 0;
+    }
 
-    for (int i = 0; i < tempHSize; i++)
+
+
+    for (int i = 0; i < tempHolderSize; i++)
     {
         unDivNum += tempHolder[i];
     }
 
-
-    return ceil(unDivNum/tempHSize);
+    return ceil(unDivNum/tempHolderSize);
 }
 
 int getTemp()
@@ -85,24 +100,24 @@ int main()
     {
         runTemp = getTemp();
 
-        if (minTemp == 0 && maxTemp == 0)
+        if (minTemp == maxTemp)
         {
             minTemp = runTemp;
             maxTemp = runTemp + 1;
         }
-
         if (runTemp < minTemp)
         {
             minTemp = runTemp;
         }
-        
         if (runTemp > maxTemp)
         {
             maxTemp = runTemp;
         }
 
+        avgTemp = avgTheTemp(runTemp);
+
         Difference = maxTemp - minTemp;
-        Percent    = (float)(runTemp - minTemp)/Difference;
+        Percent    = (float)(avgTemp - minTemp)/Difference;
         onTime     = Scalar * Percent;
         
         setPWM();
