@@ -123,11 +123,8 @@ int main()
         Percent    = (float)(avgTemp - minTemp)/Difference;
         onTime     = Scalar * Percent;
 
-        printf("At setPWM() stage.\n");
-        setPWM();
-
-        printf("Hit reporting stage.\n");
         printf("%f %d %d %d %d %d\n", Percent, avgTemp, runTemp, minTemp, maxTemp, Difference);
+        setPWM();
     }
 
     return 0;
