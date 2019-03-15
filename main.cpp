@@ -25,6 +25,7 @@ int runTemp               = 0;
 int avgTemp               = 0;
 int minTemp               = 0;
 int maxTemp               = 0;
+int avgRun                = 0;
 int Difference            = 0;
 int onTime                = 0;
 
@@ -44,7 +45,6 @@ int avgTheTemp(int inVal)
 {
     // This number is set to 0, allows for numbers to be added and averaged 
     int unDivNum = 0;
-    int avgRun   = 0;
 
     // Presets the entire tempHolder array to the current inVal to gurantee unDivNum !< minTemp
     if (tempHolder[0] == 0)
@@ -122,7 +122,7 @@ int main()
         
         setPWM();
 
-        printf("%f %d %d %d %d\n", Percent, runTemp, minTemp, maxTemp, Difference);
+        printf("%f %d %d %d %d %d\n", Percent, avgTemp, runTemp, minTemp, maxTemp, Difference);
     }
 
     return 0;
