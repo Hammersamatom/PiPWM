@@ -1,6 +1,6 @@
 CC=g++
 #CPPFLAGS=-march=native -mtune=native -Os -fno-plt -flto -fno-exceptions -lwiringPi
-CPPFLAGS=-O0-lwiringPi
+CPPFLAGS=-O0 -lwiringPi
 PROGNAME=pipwm
 
 $(PROGNAME): main.o
