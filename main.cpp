@@ -57,7 +57,7 @@ int avgTheTemp(int inVal)
     
     tempHolder[avgRun] = inVal;
     avgRun++;
-    if (avgRun == 5)
+    if (avgRun == tempHolderSize)
     {
         avgRun = 0;
     }
