@@ -88,7 +88,7 @@ int getTemp()
     temperatureFile.close();
 
     // The output of the /sys/ file is five char. We cast to float, divide until two decimal places. Round up, divide by ten to get correct value.
-    return atof(val);
+    return atof(val)/100;
 }
 
 int main()
