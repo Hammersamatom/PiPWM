@@ -14,24 +14,23 @@ using namespace std;
 #define PWMpin 0
 
 // These do not change. Scalar might be changeable to support different frequencies. 
-const int16_t Scalar         = 100;
-const int16_t tempHolderSize = 10;
+const short Scalar         = 100;
+const short tempHolderSize = 10;
 const char tempPath[]    = {"/sys/class/thermal/thermal_zone0/temp"};
 
 // Presetting some variables to avoid problems.
-int16_t tempHolder[tempHolderSize] = {tempHolderSize};
-int16_t runTemp                    = 0;
-int16_t avgTemp                    = 0;
-int16_t minTemp                    = 0;
-int16_t maxTemp                    = 0;
-int16_t avgRun                     = 0;
+short tempHolder[tempHolderSize] = {tempHolderSize};
+short avgTemp                    = 0;
+short minTemp                    = 0;
+short maxTemp                    = 0;
+short avgRun                     = 0;
 
 
 
 void setPWM(float percentIn)
 {
-    int16_t onTime  = percentIn * Scalar;
-    int16_t offTime = Scalar - onTime;
+    short onTime  = percentIn * Scalar;
+    short offTime = Scalar - onTime;
 
     digitalWrite(PWMpin, 1);
     this_thread::sleep_for(chrono::milliseconds(onTime));
@@ -39,15 +38,15 @@ void setPWM(float percentIn)
     this_thread::sleep_for(chrono::milliseconds(offTime));
 }
 
-int16_t avgTheTemp(int16_t inVal)
+short avgTheTemp(short inVal)
 {
     // This number is set to 0, allows for numbers to be added and averaged 
-    int16_t unDivNum = 0;
+    short unDivNum = 0;
 
     // Presets the entire tempHolder array to the current inVal to gurantee unDivNum !< minTemp
     if (tempHolder[0] == tempHolderSize)
     {
-        for (int16_t i = 0; i < tempHolderSize; i++)
+        for (short i = 0; i < tempHolderSize; i++)
         {
             tempHolder[i] = inVal;
         }
@@ -60,12 +59,12 @@ int16_t avgTheTemp(int16_t inVal)
         avgRun = 0;
     }
 
-    for (int16_t i = 0; i < tempHolderSize; i++)
+    for (short i = 0; i < tempHolderSize; i++)
     {
         unDivNum += tempHolder[i];
     }
 
-    for (int16_t i = 0; i < tempHolderSize; i++)
+    for (short i = 0; i < tempHolderSize; i++)
     {
         printf("%d: %d\n", i, tempHolder[i]);
     }
@@ -73,7 +72,7 @@ int16_t avgTheTemp(int16_t inVal)
     return ceil(unDivNum/tempHolderSize);
 }
 
-int16_t getTemp()
+short getTemp()
 {
     char *val = new char[5];
 
@@ -99,28 +98,26 @@ int main()
 
     while(1)
     {
-        runTemp = getTemp();
+        avgTemp = avgTheTemp(getTemp());
 
         if (minTemp == maxTemp)
         {
-            minTemp = runTemp;
-            maxTemp = runTemp + 1;
+            minTemp = avgTemp;
+            maxTemp = avgTemp + 1;
         }
-        if (runTemp < minTemp)
+        if (avgTemp < minTemp)
         {
-            minTemp = runTemp;
+            minTemp = avgTemp;
         }
-        if (runTemp > maxTemp)
+        if (avgTemp > maxTemp)
         {
-            maxTemp = runTemp;
+            maxTemp = avgTemp;
         }
 
-        avgTemp = avgTheTemp(runTemp);
-
-        int16_t Difference = maxTemp - minTemp;
+        short Difference = maxTemp - minTemp;
         float Percent  = (float)(avgTemp - minTemp)/Difference;
 
-        printf("%f %d %d %d %d %d\n", Percent, avgTemp, runTemp, minTemp, maxTemp, Difference);
+        printf("%f %d %d %d %d\n", Percent, avgTemp, minTemp, maxTemp, Difference);
         setPWM(Percent);
 
         printf("\033c");
