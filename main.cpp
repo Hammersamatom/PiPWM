@@ -15,7 +15,7 @@ using namespace std;
 
 // These do not change. Scalar might be changeable to support different frequencies. 
 const int Scalar         = 100;
-const int tempHolderSize = 10;
+const int tempHolderSize = 5;
 const char tempPath[]    = {"/sys/class/thermal/thermal_zone0/temp"};
 
 // Presetting some variables to avoid problems.
@@ -27,11 +27,8 @@ int avgRun                     = 0;
 
 
 
-void setPWM(float percentIn)
+void setPWM(int onTime, int offTime)
 {
-    int onTime  = percentIn * Scalar;
-    int offTime = Scalar - onTime;
-
     digitalWrite(PWMpin, 1);
     this_thread::sleep_for(chrono::milliseconds(onTime));
     digitalWrite(PWMpin, 0);
@@ -51,7 +48,8 @@ int avgTheTemp(int inVal)
             tempHolder[i] = inVal;
         }
     }
-    
+
+    // Jank as hell way of setting the different array values 
     tempHolder[avgRun] = inVal;
     avgRun++;
     if (avgRun == tempHolderSize)
@@ -121,8 +119,13 @@ int main()
         int Difference = maxTemp - minTemp;
         float Percent  = (float)(avgTemp - minTemp)/Difference;
 
+	int onTime = Percent * Scalar;
+	int offTime = Scalar - onTime;
+
+
         printf("%f %d %d %d %d\n", Percent, avgTemp, minTemp, maxTemp, Difference);
-        setPWM(Percent);
+
+	setPWM(onTime, offTime);
     }
 
     return 0;
