@@ -1,4 +1,10 @@
+# Name of the program
+pipwm
+
+# Compiled stuff
 *.o
 *.out
-pipwm
+*.gcda
+
+# Unneeded stuff
 .vscode
